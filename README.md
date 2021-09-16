@@ -1,2 +1,2 @@
 # Color_Interpreter
- This project interpreters color codes from images.
+ This project interpret color codes from images.
