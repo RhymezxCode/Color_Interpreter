@@ -44,7 +44,7 @@
             android:layout_marginBottom="20dp"
             android:foreground="?attr/selectableItemBackgroundBorderless"
             android:fontFamily="@font/comfortaa_regular"
-            android:text="Take a picture"
+            android:text="@string/take_a_picture"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="16sp" />

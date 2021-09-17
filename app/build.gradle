@@ -1,11 +1,12 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
     compileSdk 31
-
+    ndkVersion "22.0.7026061"
     defaultConfig {
         applicationId "com.project.colorinterpreter"
         minSdk 21
@@ -37,7 +38,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
@@ -49,4 +50,11 @@ dependencies {
 
     // For tutorial display
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0'
+
+    // To crop images from phone
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    kapt 'com.github.bumptech.glide:compiler:4.11.0'
 }
