@@ -53,7 +53,7 @@ import kotlin.properties.Delegates
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val context = this@MainActivity
     private lateinit var image: ImageView
-    private lateinit var colorImage: ImageView
+    private lateinit var colorImage: View
     private lateinit var bottom: View
     private lateinit var colorCode: TextView
     private lateinit var informationHeading: TextView
@@ -90,8 +90,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         image.buildDrawingCache(true)
 
 
-        image.setOnTouchListener{v, event ->
-            when(event.action){
+        image.setOnTouchListener { v, event ->
+            when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     bitmap = image.getDrawingCache()
                     val pixel = bitmap.getPixel(event.x.toInt(), event.y.toInt())
@@ -100,16 +100,20 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     val g = Color.green(pixel)
                     val b = Color.blue(pixel)
 
-                    var color by Delegates.notNull<Int>()
-                    lateinit var draw : ColorDrawable
-                    val background = v.background
+                    var color = Color.TRANSPARENT
+
+                    val background = colorImage.background
+
                     if(background is ColorDrawable){
-                        draw = background
+                        color = background.color
                     }
-                    color = draw.color
+
                     colorImage.setBackgroundColor(Color.rgb(r, g, b))
                     bottom.setBackgroundColor(Color.rgb(r, g, b))
-                    colorCode.setText("HEX: "+ Integer.toHexString(color),  TextView.BufferType.EDITABLE)
+                    colorCode.setText(
+                        "HEX: " + Integer.toHexString(color),
+                        TextView.BufferType.EDITABLE
+                    )
 
                 }
 
@@ -121,25 +125,28 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     val g = Color.green(pixel)
                     val b = Color.blue(pixel)
 
-                    var color by Delegates.notNull<Int>()
-                    lateinit var draw : ColorDrawable
-                    val background = v.background
+                    var color = Color.TRANSPARENT
+
+                    val background = colorImage.background
+
                     if(background is ColorDrawable){
-                        draw = background
+                        color = background.color
                     }
-                    color = draw.color
+
                     colorImage.setBackgroundColor(Color.rgb(r, g, b))
                     bottom.setBackgroundColor(Color.rgb(r, g, b))
-                    colorCode.setText("HEX: "+ Integer.toHexString(color),  TextView.BufferType.EDITABLE)
+                    colorCode.setText(
+                        "HEX: #" + Integer.toHexString(color),
+                        TextView.BufferType.EDITABLE
+                    )
                 }
 
                 else -> {
 
 
-
                 }
             }
-           true
+            true
         }
 
 

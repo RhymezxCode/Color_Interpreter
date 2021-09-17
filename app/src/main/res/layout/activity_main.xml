@@ -69,12 +69,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageView
+                    <View
                         android:id="@+id/color_image"
                         android:layout_width="121dp"
                         android:layout_height="105dp"
                         android:background="#000000"
-                        android:backgroundTint="#000000"
                         android:scaleType="center"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -87,7 +86,7 @@
                         android:fontFamily="@font/comfortaa_semibold"
                         android:text="@string/hex_000000"
                         android:textColor="@color/black"
-                        android:textSize="24sp"
+                        android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="@+id/color_image"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
