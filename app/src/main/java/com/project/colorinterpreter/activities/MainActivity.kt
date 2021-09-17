@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val context = this@MainActivity
     private lateinit var image: ImageView
     private lateinit var colorImage: ImageView
+    private lateinit var bottom: View
     private lateinit var colorCode: TextView
     private lateinit var informationHeading: TextView
     private lateinit var information: TextView
@@ -81,6 +82,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         informationHeading = findViewById(R.id.information_heading)
         information = findViewById(R.id.information)
         selectImage = findViewById(R.id.select_image)
+        bottom = findViewById(R.id.bottom)
         selectImage.setOnClickListener(context)
         progress = ProgressLoader(this)
 
@@ -106,6 +108,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     }
                     color = draw.color
                     colorImage.setBackgroundColor(Color.rgb(r, g, b))
+                    bottom.setBackgroundColor(Color.rgb(r, g, b))
                     colorCode.setText("HEX: "+ Integer.toHexString(color),  TextView.BufferType.EDITABLE)
 
                 }
@@ -126,6 +129,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     }
                     color = draw.color
                     colorImage.setBackgroundColor(Color.rgb(r, g, b))
+                    bottom.setBackgroundColor(Color.rgb(r, g, b))
                     colorCode.setText("HEX: "+ Integer.toHexString(color),  TextView.BufferType.EDITABLE)
                 }
 
