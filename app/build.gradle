@@ -8,7 +8,7 @@ android {
     compileSdk 31
     ndkVersion "22.0.7026061"
     defaultConfig {
-        applicationId "com.project.colorinterpreter"
+        applicationId "com.project.image.analysis"
         minSdk 21
         targetSdk 31
         versionCode 1
