@@ -325,6 +325,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 if (resultCode == Activity.RESULT_OK) {
                     if (result != null) {
                         try {
+
+                            image.setImageBitmap(null)
+                            image.destroyDrawingCache()
                             image.setImageURI(result.uri)
 
                             filePath = getFilePath(context, result.uri)
