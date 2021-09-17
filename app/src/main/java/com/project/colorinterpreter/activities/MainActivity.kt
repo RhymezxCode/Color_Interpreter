@@ -231,7 +231,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         selectDialog.show()
     }
 
-
     private fun showSettingsDialog() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle("Need Permissions")
