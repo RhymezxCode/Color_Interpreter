@@ -29,10 +29,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import com.google.android.material.snackbar.Snackbar
@@ -48,7 +45,6 @@ import com.theartofdev.edmodo.cropper.CropImageView
 import java.io.File
 import java.io.IOException
 import java.net.URISyntaxException
-import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val context = this@MainActivity
@@ -60,7 +56,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var information: TextView
     private lateinit var selectImage: Button
     private lateinit var imageFile: File
-    private lateinit var bitmap: Bitmap
+    private var bitmap: Bitmap? = null
     private var currentPhotoPath = ""
     private lateinit var progress: ProgressLoader
 
@@ -93,52 +89,65 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         image.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    bitmap = image.getDrawingCache()
-                    val pixel = bitmap.getPixel(event.x.toInt(), event.y.toInt())
+                    try {
+                        bitmap = image.getDrawingCache()
+                        val pixel = bitmap!!.getPixel(event.x.toInt(), event.y.toInt())
 
-                    val r = Color.red(pixel)
-                    val g = Color.green(pixel)
-                    val b = Color.blue(pixel)
+                        val r = Color.red(pixel)
+                        val g = Color.green(pixel)
+                        val b = Color.blue(pixel)
 
-                    var color = Color.TRANSPARENT
+                        var color = Color.TRANSPARENT
 
-                    val background = colorImage.background
+                        val background = colorImage.background
 
-                    if(background is ColorDrawable){
-                        color = background.color
+                        if (background is ColorDrawable) {
+                            color = background.color
+                        }
+
+                        colorImage.setBackgroundColor(Color.rgb(r, g, b))
+                        bottom.setBackgroundColor(Color.rgb(r, g, b))
+                        colorCode.setText(
+                            "HEX: " + Integer.toHexString(color),
+                            TextView.BufferType.EDITABLE
+                        )
+                    } catch (e: java.lang.Exception) {
+                        e.printStackTrace()
                     }
-
-                    colorImage.setBackgroundColor(Color.rgb(r, g, b))
-                    bottom.setBackgroundColor(Color.rgb(r, g, b))
-                    colorCode.setText(
-                        "HEX: " + Integer.toHexString(color),
-                        TextView.BufferType.EDITABLE
-                    )
 
                 }
 
                 MotionEvent.ACTION_MOVE -> {
-                    bitmap = image.getDrawingCache()
-                    val pixel = bitmap.getPixel(event.x.toInt(), event.y.toInt())
+                    try {
+                        bitmap = image.getDrawingCache()
+                        val pixel = bitmap!!.getPixel(event.x.toInt(), event.y.toInt())
 
-                    val r = Color.red(pixel)
-                    val g = Color.green(pixel)
-                    val b = Color.blue(pixel)
+                        val r = Color.red(pixel)
+                        val g = Color.green(pixel)
+                        val b = Color.blue(pixel)
 
-                    var color = Color.TRANSPARENT
+                        var color = Color.TRANSPARENT
 
-                    val background = colorImage.background
+                        val background = colorImage.background
 
-                    if(background is ColorDrawable){
-                        color = background.color
+                        if (background is ColorDrawable) {
+                            color = background.color
+                        }
+
+                        colorImage.setBackgroundColor(Color.rgb(r, g, b))
+                        bottom.setBackgroundColor(Color.rgb(r, g, b))
+                        colorCode.setText(
+                            "HEX: #" + Integer.toHexString(color),
+                            TextView.BufferType.EDITABLE
+                        )
+                    } catch (e: java.lang.Exception) {
+                        e.printStackTrace()
                     }
+                }
 
-                    colorImage.setBackgroundColor(Color.rgb(r, g, b))
-                    bottom.setBackgroundColor(Color.rgb(r, g, b))
-                    colorCode.setText(
-                        "HEX: #" + Integer.toHexString(color),
-                        TextView.BufferType.EDITABLE
-                    )
+                MotionEvent.ACTION_UP -> {
+
+
                 }
 
                 else -> {
@@ -166,7 +175,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
                                 report?.let {
                                     if (report.areAllPermissionsGranted()) {
-                                        selectDialog()
+                                        takePhotoFromCamera()
                                     } else if (report.isAnyPermissionPermanentlyDenied) {
                                         showSettingsDialog()
                                     }
@@ -193,10 +202,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     @Suppress("DEPRECATION")
     private fun getImageFile(): File {
         val imageFileName = "JPEG_" + System.currentTimeMillis() + "_"
-        val storageDir = File(
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),
-            "Camera"
-        )
+//        val storageDir = File(
+//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),
+//            "Camera"
+//        )
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val file: File = File.createTempFile(imageFileName, ".jpg", storageDir)
         currentPhotoPath = "file:" + file.absolutePath
         return file
@@ -306,7 +316,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 if (resultCode == Activity.RESULT_OK) {
                     val uri = Uri.parse(currentPhotoPath)
                     launchImageCrop(uri)
-                } else {
+                }else {
                     Log.v("Image error:", "Couldn't select that image from camera.")
                     Snackbar.make(
                         findViewById(android.R.id.content),
@@ -339,6 +349,32 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             image.setImageBitmap(null)
                             image.destroyDrawingCache()
                             image.setImageURI(result.uri)
+
+                            try {
+                                bitmap = image.getDrawingCache()
+                                val pixel = bitmap!!.getPixel(image.x.toInt(), image.y.toInt())
+
+                                val r = Color.red(pixel)
+                                val g = Color.green(pixel)
+                                val b = Color.blue(pixel)
+
+                                var color = Color.TRANSPARENT
+
+                                val background = colorImage.background
+
+                                if (background is ColorDrawable) {
+                                    color = background.color
+                                }
+
+                                colorImage.setBackgroundColor(Color.rgb(r, g, b))
+                                bottom.setBackgroundColor(Color.rgb(r, g, b))
+                                colorCode.setText(
+                                    "HEX: " + Integer.toHexString(color),
+                                    TextView.BufferType.EDITABLE
+                                )
+                            } catch (e: java.lang.Exception) {
+                                e.printStackTrace()
+                            }
 
                             filePath = getFilePath(context, result.uri)
 

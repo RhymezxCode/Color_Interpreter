@@ -4,7 +4,9 @@
     <string name="select_an_image_from_phone">Select an image from phone</string>
     <string name="select_image">Select Image</string>
     <string name="hex_000000">HEX: #000000</string>
-    <string name="color_information">Description: </string>
-    <string name="information">Black is a color of danger, you are becoming a vampire and it can likely affect your life in the day time.</string>
+    <string name="color_information">Result of mmol/l: </string>
+    <string name="information">This is where the information about the color will be shown after analysis.</string>
     <string name="image_analysis">Image Analysis</string>
+    <string name="other_info">Please Note..... \n\nBlack is the default color, if no image was taken, you can also touch the part of the image to get the color from it.</string>
+    <string name="color_from_image">Color from Image :-</string>
 </resources>
