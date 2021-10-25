@@ -32,6 +32,8 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
+import com.getkeepsafe.taptargetview.TapTarget
+import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.google.android.material.snackbar.Snackbar
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -49,13 +51,12 @@ import java.net.URISyntaxException
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val context = this@MainActivity
     private lateinit var image: ImageView
-    private lateinit var colorImage: View
     private lateinit var bottom: View
-    private lateinit var colorCode: TextView
     private lateinit var informationHeading: TextView
     private lateinit var information: TextView
     private lateinit var selectImage: Button
     private lateinit var imageFile: File
+    private lateinit var help: Button
     private var bitmap: Bitmap? = null
     private var currentPhotoPath = ""
     private lateinit var progress: ProgressLoader
@@ -73,17 +74,120 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_main)
 
         image = findViewById(R.id.image)
-        colorImage = findViewById(R.id.color_image)
-        colorCode = findViewById(R.id.color_code)
         informationHeading = findViewById(R.id.information_heading)
         information = findViewById(R.id.information)
         selectImage = findViewById(R.id.select_image)
         bottom = findViewById(R.id.bottom)
+        help = findViewById(R.id.help)
         selectImage.setOnClickListener(context)
         progress = ProgressLoader(this)
 
         image.isDrawingCacheEnabled = true
         image.buildDrawingCache(true)
+
+        help.setOnClickListener {
+            TapTargetSequence(context)
+                .targets(
+                    TapTarget.forView(
+                        findViewById(R.id.select_image),
+                        "Select Image!",
+                        "This button is used to take a picture using the photo's camera."
+                    )
+                        .outerCircleColor(R.color.black)
+                        .descriptionTextColor(R.color.white)
+                        .targetCircleColor(R.color.white)
+                        .titleTextSize(24)
+                        .descriptionTextSize(20)
+                        .textColor(R.color.white)
+                        .dimColor(R.color.white)
+                        .drawShadow(true)
+                        .cancelable(true)
+                        .tintTarget(true)
+                        .transparentTarget(true)
+                        .targetRadius(60),
+
+                    TapTarget.forView(
+                        findViewById(R.id.image),
+                        " ",
+                        "This is where the photo taken will appear, to get the color from" +
+                                " this photo, you can touch the exact spot."
+                    )
+                        .outerCircleColor(R.color.black)
+                        .descriptionTextColor(R.color.white)
+                        .targetCircleColor(R.color.white)
+                        .titleTextSize(24)
+                        .descriptionTextSize(20)
+                        .textColor(R.color.white)
+                        .dimColor(R.color.black)
+                        .drawShadow(true)
+                        .cancelable(true)
+                        .tintTarget(true)
+                        .transparentTarget(true)
+                        .targetRadius(60),
+
+                    TapTarget.forView(
+                        findViewById(R.id.bottom),
+                        "Color from the image!",
+                        "This is where the color from the image will appear, but" +
+                                " you will be required to touch the spot you want to get the color from on that image."
+                    )
+                        .outerCircleColor(R.color.black)
+                        .descriptionTextColor(R.color.white)
+                        .targetCircleColor(R.color.white)
+                        .titleTextSize(24)
+                        .descriptionTextSize(20)
+                        .textColor(R.color.white)
+                        .dimColor(R.color.black)
+                        .drawShadow(true)
+                        .cancelable(true)
+                        .tintTarget(true)
+                        .transparentTarget(true)
+                        .targetRadius(60),
+
+                    TapTarget.forView(
+                        findViewById(R.id.information_heading),
+                        "Hex code!",
+                        "This is where the hex code of the color is going to appear"
+                    )
+                        .outerCircleColor(R.color.black)
+                        .descriptionTextColor(R.color.white)
+                        .targetCircleColor(R.color.white)
+                        .titleTextSize(24)
+                        .descriptionTextSize(20)
+                        .textColor(R.color.white)
+                        .dimColor(R.color.black)
+                        .drawShadow(true)
+                        .cancelable(true)
+                        .tintTarget(true)
+                        .transparentTarget(true)
+                        .targetRadius(60),
+                    TapTarget.forView(
+                        findViewById(R.id.information),
+                        "Full description!",
+                        "This is where the information about the color will appear."
+                    )
+                        .outerCircleColor(R.color.black)
+                        .descriptionTextColor(R.color.white)
+                        .targetCircleColor(R.color.white)
+                        .titleTextSize(24)
+                        .descriptionTextSize(20)
+                        .textColor(R.color.white)
+                        .dimColor(R.color.black)
+                        .drawShadow(true)
+                        .cancelable(true)
+                        .tintTarget(true)
+                        .transparentTarget(true)
+                        .targetRadius(60)
+
+
+
+                )
+                .listener(object : TapTargetSequence.Listener {
+                    override fun onSequenceFinish() {}
+                    override fun onSequenceStep(lastTarget: TapTarget, targetClicked: Boolean) {}
+                    override fun onSequenceCanceled(lastTarget: TapTarget) {}
+                }).start()
+        }
 
 
         image.setOnTouchListener { v, event ->
@@ -99,16 +203,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
                         var color = Color.TRANSPARENT
 
-                        val background = colorImage.background
+                        val background = bottom.background
 
                         if (background is ColorDrawable) {
                             color = background.color
                         }
 
-                        colorImage.setBackgroundColor(Color.rgb(r, g, b))
                         bottom.setBackgroundColor(Color.rgb(r, g, b))
-                        colorCode.setText(
-                            "HEX: " + Integer.toHexString(color),
+                        informationHeading.setText(
+                            "Result (mmol/L) : #" + Integer.toHexString(color),
                             TextView.BufferType.EDITABLE
                         )
                     } catch (e: java.lang.Exception) {
@@ -128,16 +231,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
                         var color = Color.TRANSPARENT
 
-                        val background = colorImage.background
+                        val background = bottom.background
 
                         if (background is ColorDrawable) {
                             color = background.color
                         }
 
-                        colorImage.setBackgroundColor(Color.rgb(r, g, b))
                         bottom.setBackgroundColor(Color.rgb(r, g, b))
-                        colorCode.setText(
-                            "HEX: #" + Integer.toHexString(color),
+                        informationHeading.setText(
+                            "Result (mmol/L) : #" + Integer.toHexString(color),
                             TextView.BufferType.EDITABLE
                         )
                     } catch (e: java.lang.Exception) {
@@ -316,7 +418,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 if (resultCode == Activity.RESULT_OK) {
                     val uri = Uri.parse(currentPhotoPath)
                     launchImageCrop(uri)
-                }else {
+                } else {
                     Log.v("Image error:", "Couldn't select that image from camera.")
                     Snackbar.make(
                         findViewById(android.R.id.content),
@@ -360,16 +462,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
                                 var color = Color.TRANSPARENT
 
-                                val background = colorImage.background
+                                val background = bottom.background
 
                                 if (background is ColorDrawable) {
                                     color = background.color
                                 }
-
-                                colorImage.setBackgroundColor(Color.rgb(r, g, b))
                                 bottom.setBackgroundColor(Color.rgb(r, g, b))
-                                colorCode.setText(
-                                    "HEX: " + Integer.toHexString(color),
+                                informationHeading.setText(
+                                    "Result (mmol/L) : #" + Integer.toHexString(color),
                                     TextView.BufferType.EDITABLE
                                 )
                             } catch (e: java.lang.Exception) {
