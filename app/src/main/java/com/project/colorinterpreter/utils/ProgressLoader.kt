@@ -20,6 +20,7 @@ internal class ProgressLoader(private var context: Context?) {
         dialog_main!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog_main!!.setCancelable(true)
         dialog_main!!.show()
+        
     }
 
     fun hidedialog() {
