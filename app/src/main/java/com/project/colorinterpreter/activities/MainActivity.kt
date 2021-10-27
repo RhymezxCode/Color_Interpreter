@@ -41,6 +41,7 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.project.colorinterpreter.BuildConfig
 import com.project.colorinterpreter.R
+import com.project.colorinterpreter.utils.ColorHash
 import com.project.colorinterpreter.utils.ProgressLoader
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -67,9 +68,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var backPass: Long? = 0
     private var filePath: String? = null
 
-    private var colorHash : HashMap<String, String?> = HashMap()
-
-
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,13 +84,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         image.isDrawingCacheEnabled = true
         image.buildDrawingCache(true)
-
-
-
-
-
-
-
 
         help.setOnClickListener {
             TapTargetSequence(context)
@@ -189,7 +180,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                         .targetRadius(60)
 
 
-
                 )
                 .listener(object : TapTargetSequence.Listener {
                     override fun onSequenceFinish() {}
@@ -203,26 +193,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     try {
-                        bitmap = image.getDrawingCache()
-                        val pixel = bitmap!!.getPixel(event.x.toInt(), event.y.toInt())
-
-                        val r = Color.red(pixel)
-                        val g = Color.green(pixel)
-                        val b = Color.blue(pixel)
-
-                        var color = Color.TRANSPARENT
-
-                        val background = bottom.background
-
-                        if (background is ColorDrawable) {
-                            color = background.color
-                        }
-
-                        bottom.setBackgroundColor(Color.rgb(r, g, b))
-                        informationHeading.setText(
-                            "Result (mmol/L) : #" + Integer.toHexString(color),
-                            TextView.BufferType.EDITABLE
-                        )
+                        calculateColor(event)
                     } catch (e: java.lang.Exception) {
                         e.printStackTrace()
                     }
@@ -231,30 +202,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
                 MotionEvent.ACTION_MOVE -> {
                     try {
-                        bitmap = image.getDrawingCache()
-                        val pixel = bitmap!!.getPixel(event.x.toInt(), event.y.toInt())
-
-                        val r = Color.red(pixel)
-                        val g = Color.green(pixel)
-                        val b = Color.blue(pixel)
-
-                        var color = Color.TRANSPARENT
-
-                        val background = bottom.background
-
-                        if (background is ColorDrawable) {
-                            color = background.color
-                        }
-
-                        bottom.setBackgroundColor(Color.rgb(r, g, b))
-                        informationHeading.setText(
-                            "Result (mmol/L) : #" + Integer.toHexString(color),
-                            TextView.BufferType.EDITABLE
-                        )
-                        information.setText(
-                            "Result (mmol/L) : #" + Integer.toHexString(color),
-                            TextView.BufferType.EDITABLE
-                        )
+                        calculateColor(event)
                     } catch (e: java.lang.Exception) {
                         e.printStackTrace()
                     }
@@ -274,6 +222,33 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
 
 
+    }
+
+    private fun calculateColor(event: MotionEvent) {
+        bitmap = image.getDrawingCache()
+        val pixel = bitmap!!.getPixel(event.x.toInt(), event.y.toInt())
+
+        val r = Color.red(pixel)
+        val g = Color.green(pixel)
+        val b = Color.blue(pixel)
+
+        var color = Color.TRANSPARENT
+
+        val background = bottom.background
+
+        if (background is ColorDrawable) {
+            color = background.color
+        }
+
+        bottom.setBackgroundColor(Color.rgb(r, g, b))
+        informationHeading.setText(
+            "Result (mmol/L) : #" + Integer.toHexString(color),
+            TextView.BufferType.EDITABLE
+        )
+        information.setText(
+            ColorHash.getInformation(Integer.toHexString(color)),
+            TextView.BufferType.EDITABLE
+        )
     }
 
     override fun onClick(v: View?) {
